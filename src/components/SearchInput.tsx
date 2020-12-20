@@ -23,7 +23,15 @@ const SearchInput: React.FC<SearchInputProps> = ({
         size="huge"
         fluid
         icon={
-          <Icon name="search" type="submit" link onClick={handleSearchSubmit} />
+          <Icon
+            name="search"
+            circular
+            color="green"
+            inverted
+            type="submit"
+            link
+            onClick={handleSearchSubmit}
+          />
         }
         placeholder="Type username here..."
       />

@@ -1,21 +1,18 @@
-import React, { useState, useEffect, MouseEventHandler } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import {
   Header,
   Icon,
   Container,
   Card,
-  Button,
-  Loader,
-  Dimmer,
   Message,
-  Segment,
   Pagination,
 } from 'semantic-ui-react'
 import SearchInput from './SearchInput'
+import UserLoader from './UserLoader'
 import User from './User'
+import ClearButton from './ClearButton'
 
-const buttonStyles = { margin: '0.5rem' }
 const gitHubResultsMax = 1000
 const resultsPerPage = 3
 
@@ -43,9 +40,7 @@ const GithubSearchContainer: React.FC = () => {
     setSearchString(event.target.value)
   }
 
-  const handleKeyPress = async (
-    event: React.KeyboardEvent<HTMLDivElement>
-  ): Promise<any> => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
     if (event.key === 'Enter') {
       handleSearchSubmit(event)
     }
@@ -85,8 +80,6 @@ const GithubSearchContainer: React.FC = () => {
     setPage(activePage)
   }
 
-  console.log(page, '<===page')
-
   const clearResults = (): void => {
     setSearchString('')
     setSubmitted(false)
@@ -111,15 +104,7 @@ const GithubSearchContainer: React.FC = () => {
           <>
             <Message fluid="true" color="red" style={{ textAlign: 'center' }}>
               {error}
-              <Button
-                icon
-                size="mini"
-                style={buttonStyles}
-                color="red"
-                onClick={clearResults}
-              >
-                <Icon name="x" />
-              </Button>
+              <ClearButton clearResults={clearResults} />
             </Message>
           </>
         )}
@@ -134,27 +119,18 @@ const GithubSearchContainer: React.FC = () => {
 
       {userResults.length > 0 && (
         <>
-          {loading && (
-            <Dimmer active>
-              <Loader icon="github">Getting Users...</Loader>
-            </Dimmer>
-          )}
           <Header as="h3" textAlign="center">
             {totalResults} result(s) for your search...
-            <Button
-              icon
-              size="mini"
-              style={buttonStyles}
-              color="red"
-              onClick={clearResults}
-            >
-              <Icon name="x" />
-            </Button>
           </Header>
+          <ClearButton clearResults={clearResults} />
           <Card.Group centered>
-            {userResults.map((user: User) => (
-              <User user={user} key={user.id} />
-            ))}
+            {userResults.map((user: User) =>
+              loading ? (
+                <UserLoader key={user.id} />
+              ) : (
+                <User user={user} key={user.id} />
+              )
+            )}
           </Card.Group>
           <Container textAlign="center" style={{ padding: '1rem' }}>
             <Pagination
