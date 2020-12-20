@@ -3,9 +3,9 @@ import { Icon, Form } from 'semantic-ui-react'
 
 interface SearchInputProps {
   searchString: string
-  handleSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  handleKeyPress: (event: React.KeyboardEvent<HTMLDivElement>) => void
-  handleSearchSubmit: (event: React.KeyboardEvent<HTMLDivElement>) => void
+  handleSearchChange: InputChange
+  handleKeyPress: Submit
+  handleSearchSubmit: Submit
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({

@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import {
-  Header,
-  Icon,
-  Container,
-  Card,
-  Message,
-  Pagination,
-} from 'semantic-ui-react'
+import { Header, Icon, Container, Card, Message, Grid } from 'semantic-ui-react'
 import SearchInput from './SearchInput'
 import UserLoader from './UserLoader'
 import User from './User'
 import ClearButton from './ClearButton'
-
-const gitHubResultsMax = 1000
-const resultsPerPage = 3
+import PaginationSection from './PaginationSection'
 
 const GithubSearchContainer: React.FC = () => {
   const [searchString, setSearchString] = useState('')
@@ -34,21 +25,17 @@ const GithubSearchContainer: React.FC = () => {
     }
   }, [page])
 
-  const handleSearchChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
+  const handleSearchChange: InputChange = (event) => {
     setSearchString(event.target.value)
   }
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+  const handleKeyPress: Submit = (event) => {
     if (event.key === 'Enter') {
       handleSearchSubmit(event)
     }
   }
 
-  const handleSearchSubmit = async (
-    event: React.KeyboardEvent<HTMLDivElement>
-  ): Promise<any> => {
+  const handleSearchSubmit: Submit = async (event): Promise<any> => {
     event.preventDefault()
     setPage(1)
     await fetchUsers(page, searchString)
@@ -73,10 +60,7 @@ const GithubSearchContainer: React.FC = () => {
     }
   }
 
-  const handlePageChange = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    { activePage }: any
-  ): void => {
+  const handlePageChange: PageChange = (event, { activePage }) => {
     setPage(activePage)
   }
 
@@ -108,7 +92,6 @@ const GithubSearchContainer: React.FC = () => {
             </Message>
           </>
         )}
-
         <SearchInput
           searchString={searchString}
           handleSearchChange={handleSearchChange}
@@ -119,10 +102,16 @@ const GithubSearchContainer: React.FC = () => {
 
       {userResults.length > 0 && (
         <>
-          <Header as="h3" textAlign="center">
-            {totalResults} result(s) for your search...
-          </Header>
-          <ClearButton clearResults={clearResults} />
+          <Grid padded centered>
+            <Grid.Column verticalAlign="middle" textAlign="right" width="9">
+              <Header as="h3">
+                {totalResults} result(s) for your search...
+              </Header>
+            </Grid.Column>
+            <Grid.Column verticalAlign="middle" textAlign="left" width="7">
+              <ClearButton clearResults={clearResults} />
+            </Grid.Column>
+          </Grid>
           <Card.Group centered>
             {userResults.map((user: User) =>
               loading ? (
@@ -132,19 +121,11 @@ const GithubSearchContainer: React.FC = () => {
               )
             )}
           </Card.Group>
-          <Container textAlign="center" style={{ padding: '1rem' }}>
-            <Pagination
-              activePage={page}
-              onPageChange={handlePageChange}
-              size="large"
-              secondary
-              totalPages={
-                totalResults > gitHubResultsMax
-                  ? Math.floor(gitHubResultsMax / resultsPerPage)
-                  : Math.floor(totalResults / resultsPerPage)
-              }
-            />
-          </Container>
+          <PaginationSection
+            page={page}
+            handlePageChange={handlePageChange}
+            totalResults={totalResults}
+          />
         </>
       )}
     </>
