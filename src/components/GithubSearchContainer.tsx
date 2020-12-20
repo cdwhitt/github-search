@@ -23,6 +23,7 @@ const GithubSearchContainer: React.FC = () => {
     if (submitted) {
       updateUsers()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
 
   const handleSearchChange: InputChange = (event) => {
